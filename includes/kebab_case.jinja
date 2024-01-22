@@ -1,0 +1,3 @@
+{% macro kebab_case(value) -%}
+{{ value|lower|regex_replace('[-\s_]+', '-') }}
+{%- endmacro %}

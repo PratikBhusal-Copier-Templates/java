@@ -1,0 +1,326 @@
+{#
+TODO: Figure out how to compile Java 9+ code that has modules into Java 8
+compatible code. See:
+- https://aseovic.medium.com/building-java-8-compatible-modular-jars-715b04299a7c
+- https://github.com/typetools/checker-framework/pull/6326
+- https://stackoverflow.com/questions/55100737/compile-a-jdk-8-project-a-jdk-9-module-info-java-in-gradle
+- https://github.com/moditect/moditect
+- https://github.com/jakartaee/common-annotations-api/pull/72/files
+- https://github.com/search?q=exclude+module-info.java+path%3A**%2Fbuild.gradle.kts&type=code&ref=advsearch
+- https://github.com/search?q=exclude+module-info.java+path%3A**%2Fbuild.gradle&type=code&ref=advsearch
+-#}
+/**
+ * See the following for how to specify plugin/dependency versions:
+ *
+ * https://docs.gradle.org/current/userguide/single_versions.ht
+ */
+import org.checkerframework.gradle.plugin.CheckerFrameworkExtension
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+// Tip: Use `apply false` in the top-level build.gradle file to add a Gradle
+// plugin as a build dependency but not apply it to the current (root) project.
+// Don't use `apply false` in sub-projects.
+//
+// For more information, see the following on applying external plugins with
+// same version to subprojects:
+//
+// - https://docs.gradle.org/current/userguide/dependency_management_basics.html
+// - https://docs.gradle.org/current/samples/sample_building_java_applications_multi_project.html
+// - https://docs.gradle.org/current/dsl/org.gradle.plugin.use.PluginDependenciesSpec.html#org.gradle.plugin.use.PluginDependenciesSpec:id(java.lang.String)
+plugins {
+    id("java")
+
+    // Code Coverage
+    id("jacoco")
+
+    // Only see code converage on new/modified code
+    // TODO: Add configuration
+    id("io.github.surpsg.delta-coverage") version "latest.release"
+
+    // Check styles
+    id("checkstyle")
+
+    // Because the project has a `sourceSet` is apply java/java-library plugin
+    // as well, don't append `apply false`. If root project doesn't have
+    // `sourceSet`, we need to append `apply false`.
+    id("com.github.andygoossens.modernizer") version "latest.release"
+
+    // Code Formatter
+    id("com.diffplug.spotless") version "latest.release"
+
+    // Enhanced type checking and verification
+    id("org.checkerframework") version "latest.release"
+
+    // AST-based plugin for static code analysis
+    id("pmd")
+
+    // AST-based plugin for bug finding
+    id("net.ltgt.errorprone") version "latest.release"
+
+    // Bytecode-based plugin for bug finding
+    id("com.github.spotbugs") version "latest.release"
+    {%- if java_ide == 'IntelliJ IDEA' %}
+
+    id("idea")
+    {%- elif java_ide == 'Eclipse' %}
+
+    id("eclipse")
+    {%- endif %}
+}
+
+group = "{{project_group_id}}"
+version = "{{project_version}}"
+
+repositories {
+    mavenCentral()
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = Charsets.UTF_8.toString()
+    options.compilerArgs.addAll(listOf(
+        "-Xlint:all",
+        "-Werror"
+    ))
+}
+
+dependencies {
+    {%- if have_dependency_injection_framework %}
+    ////////////////////////////////////////////////////////////////////////////
+    //                          Dependency Injection                          //
+    ////////////////////////////////////////////////////////////////////////////
+    // dependency injection
+    val daggerVersion = "latest.release"
+    implementation("com.google.dagger", "dagger", daggerVersion)
+    annotationProcessor("com.google.dagger", "dagger-compiler", daggerVersion)
+    compileOnly("jakarta.annotation", "jakarta.annotation-api", "latest.release")
+    {#- TODO: Look into https://avaje.io/inject #}
+{% else %}
+{%- endif %}
+    ////////////////////////////////////////////////////////////////////////////
+    //                                Logging                                 //
+    ////////////////////////////////////////////////////////////////////////////
+    {#
+    // ┌─────────────────────────────────┬──────────────────┬──────────────────┐
+    // │ Logging Dependency Requirements │ log4j─api        │ slf4j─api        │
+    // ├─────────────────────────────────┼──────────────────┼──────────────────┤
+    // │ log4j─core                      │ log4j─core,      │ log4j─core,      │
+    // │                                 │ log4j─api        │ log4j─api,       │
+    // │                                 │                  │ log4j─slf4j─impl │
+    // ├─────────────────────────────────┼──────────────────┼──────────────────┤
+    // │ logback─core                    │ logback─core,    │ logback─classic  │
+    // │                                 │ log4j─api,       │                  │
+    // │                                 │ slf4j─api,       │                  │
+    // │                                 │ log4j─slf4j─impl │                  │
+    // └─────────────────────────────────┴──────────────────┴──────────────────┘
+    -#}
+    implementation(platform("org.apache.logging.log4j:log4j-bom:latest.release"))
+    implementation("org.apache.logging.log4j", "log4j-api")
+    runtimeOnly("org.apache.logging.log4j", "log4j-core")
+
+    ////////////////////////////////////////////////////////////////////////////
+    //                              Unit Testing                              //
+    ////////////////////////////////////////////////////////////////////////////
+    // Unit Test Framework
+    //
+    // Useful info:
+    // - https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-display-names
+    testImplementation(platform("org.junit:junit-bom:latest.release"))
+    testImplementation("org.junit.jupiter", "junit-jupiter")
+
+    // Unit Test Assertion library
+    testImplementation("org.assertj", "assertj-core", "latest.release")
+    {#- https://github.com/lukas-krecan/JsonUnit #}
+
+    // Unit Test Mocking Framework
+    testImplementation(platform("org.mockito:mockito-bom:latest.release"))
+    testImplementation("org.mockito", "mockito-core")
+    testImplementation("org.mockito", "mockito-junit-jupiter")
+
+    {#
+    // Unit Testing Databases
+    //
+    // - https://java.testcontainers.org/quickstart/junit_5_quickstart/
+    //
+    // TODO: Figure out if I want to use flyway or liquibase for database
+    // migration unit testing
+    // testImplementation("org.flywaydb", "flyway-core", "latest.release")
+    // testImplementation("org.liquibase", "liquibase-core", "latest.release")
+    //
+    testImplementation(platform("org.testcontainers:testcontainers-bom:latest.release"))
+    testImplementation("org.testcontainers", "testcontainers")
+    testImplementation("org.testcontainers", "junit-jupiter")
+    -#}
+
+    ////////////////////////////////////////////////////////////////////////////
+    //                             Error Checking                             //
+    ////////////////////////////////////////////////////////////////////////////
+    // Checker framework annotations
+    //
+    // For late initialization similar to kotlin's `lateinit`, use
+    // `@MonotonicNonNull`
+    //
+    // Use `org.jspecify.annotations.Nullable` and
+    // `org.jspecify.annotations.NonNull` instead of checker framework's
+    // equivalents
+    compileOnly("org.checkerframework", "checker-qual", "latest.release")
+
+    // Null checking annotation to use with checker framework
+    //
+    // Instead of checker framework's `Nullable`/`NonNull`,
+    // use jspecify's `Nullable`/`NonNull`
+    compileOnly("org.jspecify", "jspecify", "latest.release")
+
+    // Google error-prone annotations to work with the AST compiler plugin
+    //
+    // Useful annotations:
+    // - @Immutable
+    // - @Var
+    val errorproneVersion = "latest.release"
+    errorprone("com.google.errorprone", "error_prone_core", errorproneVersion)
+    compileOnly("com.google.errorprone", "error_prone_annotations", $errorproneVersion)
+
+    {#- implementation("jakarta.validation", "jakarta.validation-api", "latest.release") -#}
+
+    {%- if use_guava_library
+        or use_apache_commons_lang_library
+        or use_functional_programming_library
+    %}
+
+    ////////////////////////////////////////////////////////////////////////////
+    //                                 Other                                  //
+    ////////////////////////////////////////////////////////////////////////////
+    // Utility Libraries/Frameworks
+        {%- if use_guava_library %}
+    implementation("com.google.guava", "guava", "latest.release")
+        {%- endif %}
+        {%- if use_apache_commons_lang_library %}
+    implementation("org.apache.commons", "commons-lang3", "latest.release")
+        {%- endif %}
+        {%- if use_functional_programming_library %}
+    implementation("io.vavr", "vavr", "1.0.0-alpha-4")
+        {%- endif %}
+    {%- endif %}
+    {#- https://github.com/fabienrenaud/java-json-benchmark #}
+    {#- implementation("org.jooq", "jooq", "latest.release") #}
+    {#- compileOnly("org.immutables", "value", "latest.release") #}
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+    }
+}
+
+spotless {
+    // optional: limit format enforcement to just the files changed by this
+    // feature branch
+    // ratchetFrom("origin/main")
+
+    format("misc") {
+        // define the files to apply `misc` to
+        target("*.gradle.kts", ".gitattributes", ".gitignore")
+
+        // define the steps to apply to those files
+        trimTrailingWhitespace()
+        indentWithSpaces(4)
+        endWithNewline()
+    }
+    java {
+        // don't need to set target, it is inferred from java
+
+        // Automatic code refactoring with Cleanthat. In the future, may replace or
+        // also include eclipse clean up refactoring tool. See:
+        //
+        // - https://github.com/solven-eu/cleanthat/blob/master/MUTATORS.generated.MD
+        // - https://github.com/solven-eu/cleanthat/blob/master/MUTATORS_BY_TAG.generated.MD
+        cleanthat()
+            // Java 17 is the latest defined version. See:
+            //
+            // Tracking:  https://github.com/solven-eu/cleanthat/blob/master/refactorer/src/main/java/eu/solven/cleanthat/engine/java/IJdkVersionConstants.java#L60
+            // Permalink: https://github.com/solven-eu/cleanthat/blob/c97ded164de19cc1c90bd3a9162ed794dae22ee9/refactorer/src/main/java/eu/solven/cleanthat/engine/java/IJdkVersionConstants.java#L60
+            {#
+            // TODO: Verify if we need to specify the sourceCompatibility field
+            // at all. If not, remove it.
+            -#}
+            .sourceCompatibility("17")
+            .includeDraft(true)
+            .addMutator("SafeAndConsensual")
+            .addMutator("SafeButControversial")
+            .addMutator("SafeButNotConsensual")
+            .addMutator("CheckStyleMutators")
+            .addMutator("ErrorProneMutators")
+            {#
+            // TODO: Verify if we want to add any of the below composite
+            // mutators.
+            -#}
+            .addMutator("Guava")
+            .addMutator("JSparrowMutators")
+            .addMutator("PMDMutators")
+            .addMutator("SonarMutators")
+            .addMutator("SpotBugsMutators")
+            .addMutator("Stream")
+            .excludeMutator("AvoidInlineConditionals")
+            .excludeMutator("CreateTempFilesUsingNio")
+            .excludeMutator("LiteralsFirstInComparisons")
+            .excludeMutator("RemoveExplicitCallToSuper")
+            .excludeMutator("SimplifyBooleanExpression")
+            .excludeMutator("SimplifyStartsWith")
+
+        {#
+        // TODO: Currently, we cannot run 2 eclipse steps within spotless
+        // gradle,but we can within spotless maven. Probably make a PR on the
+        // eclipse IDE formatter that enables adding a setting to force merge
+        // string concatenation lines and then attempt to wrap
+        //
+        // See: https://github.com/eclipse-jdt/eclipse.jdt.core/tree/master/org.eclipse.jdt.core/formatter/org/eclipse/jdt
+        //
+        // Run intermediately eclipse code formatter profile to address string
+        // concatenation inconsistencies. Based on our own preferred style
+        // configuration, but need to copy all configs as otherwise eclipse
+        // formatter will use its own defaults.
+        //
+        // See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=48433
+        eclipse("4.30")
+            .configFile(".config/no-string-concatenation-wrapping-formatter.xml")
+        -#}
+
+        // Run eclipse code formatter profile
+        eclipse("4.30")
+            .configFile(".config/eclipse-code-formatter-profile.xml")
+
+        removeUnusedImports()
+
+        // import order file as exported from eclipse. See:
+        //
+        // https://github.com/diffplug/spotless/blob/main/ECLIPSE_SCREENSHOTS.md#creating-spotlessimportorder
+        importOrderFile(".config/eclipse-import-order.importorder")
+
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+
+configure<CheckerFrameworkExtension> {
+    checkers = listOf(
+        "org.checkerframework.checker.nullness.NullnessChecker"
+    )
+}
+
+tasks.jacocoTestReport {
+    // tests are required to run before generating the report
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required = false
+        csv.required = false
+        {#-
+        // TODO: Verify if html report is generated by default. If not,
+        // uncomment the below line.
+        // html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+        #}
+    }
+}
+
+{#- // vim: filetype=kotlin:
+-#}

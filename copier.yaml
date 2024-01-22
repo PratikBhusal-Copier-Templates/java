@@ -1,0 +1,126 @@
+# CONFIGURATION
+# ------------------------------------------------------------------------------
+_min_copier_version: "9"
+_envops:
+  autoescape: true
+_subdirectory: project
+_skip_if_exists:
+- CHANGELOG.md
+
+# PROMPT
+# ------------------------------------------------------------------------------
+project_name:
+  type: str
+  help: Your project name. This will also be the project artifact id
+  default: "Hello World"
+
+project_description:
+  type: str
+  help: Your project description
+  placeholder: Your next unicorn starup.
+
+project_group_id:
+  type: str
+  help: Project group id. Uniquely identify your project across all projects.
+    Usually starts with a reserved domain name
+  default: org.example
+
+project_artifact_id:
+  type: str
+  help: Project artifact id. Name of the final jar file without version
+  default: >-
+    {%- from pathjoin('includes', 'kebab_case.jinja') import kebab_case -%}
+    {{ kebab_case(project_name) }}
+
+project_version:
+  type: str
+  help: Project version
+  default: 1.0-SNAPSHOT
+
+author_email:
+  type: str
+  help: Your email
+  default: PratikBhusal@users.noreply.github.com
+
+author_username:
+  type: str
+  help: Your username (e.g. on GitHub)
+  default: PratikBhusal
+
+author_fullname:
+  type: str
+  help: Your full name
+  default: Pratik Bhusal
+
+# repository_provider:
+#   type: str
+#   help: Your repository provider
+#   default: github.com
+#   choices:
+#   # - github.com # TODO: Support Github Actions
+#   # - gitlab.com # TODO: Support Gitlab CI/CD pipelines
+
+repository_name:
+  type: str
+  help: Your repository name
+  default: "{{ project_artifact_id }}"
+
+copyright_holder:
+  type: str
+  help: The name of the person/entity holding the copyright
+  default: "{{ author_fullname }}"
+
+copyright_holder_email:
+  type: str
+  help: The email of the person/entity holding the copyright
+  default: "{{ author_email }}"
+
+copyright_license:
+  type: str
+  help: Your project's license
+  default: ISC License
+  choices:
+  - Apache License 2.0
+  - ISC License
+  - MIT License
+
+have_dependency_injection_framework:
+  type: bool
+  help: Include Dagger for dependency injection?
+  default: yes
+
+use_guava_library:
+  type: bool
+  help: Use guava library?
+  default: yes
+
+use_apache_commons_lang_library:
+  type: bool
+  help: Use Apache Commons Lang library?
+  default: yes
+
+use_functional_programming_library:
+  type: bool
+  help: Use functional programming library?
+  default: yes
+
+# TODO: Figure out how to do this
+# support_modular_jars_for_java_8:
+#   type: bool
+#   help: Do you want to create output JARs that are compatible with java 8?
+#   default: no
+
+java_ide:
+  type: str
+  help: Which IDE are you using?
+  default: other
+  choices:
+  - IntelliJ IDEA
+  - Eclipse
+  - other
+
+# TODO: See if supporting version catalogs for monorepo-like projects is worth
+# the effort
+# See:
+# - https://arrow-kt.io/learn/quickstart/#using-version-catalogs
+# - https://docs.gradle.org/current/userguide/platforms.html
