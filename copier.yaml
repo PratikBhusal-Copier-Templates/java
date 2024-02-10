@@ -104,11 +104,16 @@ use_functional_programming_library:
   help: Use functional programming library?
   default: yes
 
-# TODO: Figure out how to do this
-# support_modular_jars_for_java_8:
-#   type: bool
-#   help: Do you want to create output JARs that are compatible with java 8?
-#   default: no
+# Support Java Platform Module System (JPMS) for Java 8 releases
+# See:
+# - https://github.com/java9-modularity/gradle-modules-plugin#separate-compilation-of-module-infojava
+# - https://github.com/search?q=%2FmixedJavaRelease%5C%28%5Cd%2B%2F+OR+%2FmixedJavaRelease+%5Cd%2F+%28path%3A**%2Fbuild.gradle.kts+OR+path%3A**%2Fbuild.gradle%29&type=code&ref=advsearch
+# - https://github.com/proticity-cloud/java-modern-gradle-plugin?tab=readme-ov-file#java-modules
+# - https://stackoverflow.com/a/55562045/231860
+support_modular_jars_for_java_8:
+  type: bool
+  help: Do you want to create output JARs that are compatible with java 8?
+  default: no
 
 java_ide:
   type: str
