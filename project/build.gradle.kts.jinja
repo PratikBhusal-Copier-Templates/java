@@ -16,6 +16,9 @@ compatible code. See:
  */
 import org.checkerframework.gradle.plugin.CheckerFrameworkExtension
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+{%- if support_modular_jars_for_java_8 %}
+import org.javamodularity.moduleplugin.extensions.ModularityExtension
+{%- endif %}
 
 // Tip: Use `apply false` in the top-level build.gradle file to add a Gradle
 // plugin as a build dependency but not apply it to the current (root) project.
@@ -61,10 +64,17 @@ plugins {
     id("com.github.spotbugs") version "latest.release"
     {%- if java_ide == 'IntelliJ IDEA' %}
 
+    // IntelliJ IDEA IDE support
     id("idea")
     {%- elif java_ide == 'Eclipse' %}
 
+    // Eclipse IDE support
     id("eclipse")
+    {%- endif %}
+    {%- if support_modular_jars_for_java_8 %}
+
+    // Support Java Platform Module System (JPMS) for Java 8 releases
+    id("org.javamodularity.moduleplugin") version "latest.release"
     {%- endif %}
 }
 
@@ -306,6 +316,13 @@ configure<CheckerFrameworkExtension> {
         "org.checkerframework.checker.nullness.NullnessChecker"
     )
 }
+
+{%- if support_modular_jars_for_java_8 %}
+
+configure<ModularityExtension> {
+    mixedJavaRelease(8)
+}
+{%- endif %}
 
 tasks.jacocoTestReport {
     // tests are required to run before generating the report
