@@ -18,3 +18,8 @@ project_description:
   type: str
   help: Your project description
   placeholder: Your next unicorn starup.
+
+project_version:
+  type: str
+  help: Project version
+  default: 1.0-SNAPSHOT
