@@ -1,0 +1,15 @@
+# CONFIGURATION
+# ------------------------------------------------------------------------------
+_min_copier_version: "9"
+_envops:
+  autoescape: true
+_subdirectory: project
+_skip_if_exists:
+- CHANGELOG.md
+
+# PROMPT
+# ------------------------------------------------------------------------------
+project_name:
+  type: str
+  help: Your project name.
+  default: "Hello World"
