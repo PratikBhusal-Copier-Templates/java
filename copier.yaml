@@ -13,3 +13,8 @@ project_name:
   type: str
   help: Your project name.
   default: "Hello World"
+
+project_description:
+  type: str
+  help: Your project description
+  placeholder: Your next unicorn starup.
