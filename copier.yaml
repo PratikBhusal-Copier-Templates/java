@@ -19,6 +19,12 @@ project_description:
   help: Your project description
   placeholder: Your next unicorn starup.
 
+project_group_id:
+  type: str
+  help: Project group id. Uniquely identify your project across all projects.
+    Usually starts with a reserved domain name
+  default: org.example
+
 project_artifact_id:
   type: str
   help: Project artifact id. Name of the final jar file without version
