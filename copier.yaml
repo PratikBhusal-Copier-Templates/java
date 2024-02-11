@@ -37,6 +37,20 @@ project_version:
   help: Project version
   default: 1.0-SNAPSHOT
 
+copyright_holder:
+  type: str
+  help: The name of the person/entity holding the copyright
+  default: "Pratik Bhusal"
+
+copyright_license:
+  type: str
+  help: Which license do you want to use for you project?
+  default: "ISC"
+  choices:
+    Apache License 2.0: "Apache"
+    ISC License: "ISC"
+    MIT License: "MIT"
+
 java_app_or_library:
   type: str
   help: >-
