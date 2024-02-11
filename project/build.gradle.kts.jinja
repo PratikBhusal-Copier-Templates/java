@@ -1,5 +1,15 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
+// Tip: Use `apply false` in the top-level build.gradle file to add a Gradle
+// plugin as a build dependency but not apply it to the current (root) project.
+// Don't use `apply false` in sub-projects.
+//
+// For more information, see the following on applying external plugins with
+// same version to subprojects:
+//
+// - https://docs.gradle.org/current/userguide/dependency_management_basics.html
+// - https://docs.gradle.org/current/samples/sample_building_java_applications_multi_project.html
+// - https://docs.gradle.org/current/dsl/org.gradle.plugin.use.PluginDependenciesSpec.html#org.gradle.plugin.use.PluginDependenciesSpec:id(java.lang.String)
 plugins {
     id("{{java_app_or_library}}")
 
