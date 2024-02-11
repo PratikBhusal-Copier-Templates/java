@@ -96,3 +96,8 @@ use_lombok:
   type: bool
   help: Use lombok?
   default: no
+
+have_dependency_injection_framework:
+  type: bool
+  help: Include Dagger for dependency injection?
+  default: yes
