@@ -1,0 +1,14 @@
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+ij_visual_guides = 80,120
+
+[Makefile]
+indent_style = tab
+
+[*.java]
+ij_java_do_while_brace_force = always
+ij_java_for_brace_force = always
+ij_java_if_brace_force = always
+ij_java_while_brace_force = always
