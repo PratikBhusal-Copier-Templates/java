@@ -32,6 +32,14 @@ project_artifact_id:
     {%- from pathjoin('includes', 'kebab_case.jinja') import kebab_case -%}
     {{ kebab_case(project_name) }}
 
+project_artifact_id_package_name_suffix:
+  type: str
+  help: Project artifact suffix used to indicate where the java module starts.
+  # For some reason we need to import kebab_case to use project_artifact_id
+  default: >-
+    {%- from pathjoin('includes', 'kebab_case.jinja') import kebab_case -%}
+    {{ project_artifact_id.replace('-', '.') }}
+
 project_version:
   type: str
   help: Project version
