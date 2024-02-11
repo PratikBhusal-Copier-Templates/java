@@ -28,6 +28,18 @@ repositories {
 }
 
 dependencies {
+    {%- if have_dependency_injection_framework %}
+    ////////////////////////////////////////////////////////////////////////////
+    //                          Dependency Injection                          //
+    ////////////////////////////////////////////////////////////////////////////
+    // dependency injection
+    val daggerVersion = "latest.release"
+    implementation("com.google.dagger", "dagger", daggerVersion)
+    annotationProcessor("com.google.dagger", "dagger-compiler", daggerVersion)
+    compileOnly("jakarta.annotation", "jakarta.annotation-api", "latest.release")
+    {#- TODO: Look into https://avaje.io/inject #}
+{% else %}
+{%- endif %}
     ////////////////////////////////////////////////////////////////////////////
     //                              Unit Testing                              //
     ////////////////////////////////////////////////////////////////////////////

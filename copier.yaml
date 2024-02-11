@@ -88,3 +88,8 @@ update_bot:
         validator: "{% if repository_host != 'github' %}Dependabot only available on GitHub{% endif %}"
     # Renovate: "renovate" # TODO: Support Renovate
   when: false # TODO: Support Renovate. This makes sure it isn't asked nor stored.
+
+have_dependency_injection_framework:
+  type: bool
+  help: Include Dagger for dependency injection?
+  default: yes
