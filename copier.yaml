@@ -19,6 +19,13 @@ project_description:
   help: Your project description
   placeholder: Your next unicorn starup.
 
+project_artifact_id:
+  type: str
+  help: Project artifact id. Name of the final jar file without version
+  default: >-
+    {%- from pathjoin('includes', 'kebab_case.jinja') import kebab_case -%}
+    {{ kebab_case(project_name) }}
+
 project_version:
   type: str
   help: Project version
