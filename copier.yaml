@@ -36,3 +36,13 @@ project_version:
   type: str
   help: Project version
   default: 1.0-SNAPSHOT
+
+java_app_or_library:
+  type: str
+  help: >-
+    Is this a java app or a library? If you need to transitively expose
+    dependencies to consumers for compile time and runtime, use `java-library`
+  default: "java"
+  choices:
+    java application: "java"
+    java library: "java-library"
