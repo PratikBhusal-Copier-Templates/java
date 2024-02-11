@@ -1,6 +1,63 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     id("{{java_app_or_library}}")
+
+    // Code Coverage
+    id("jacoco")
 }
 
 group = "{{project_group_id}}"
 version = "{{project_version}}"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    ////////////////////////////////////////////////////////////////////////////
+    //                              Unit Testing                              //
+    ////////////////////////////////////////////////////////////////////////////
+    // Unit Test Framework
+    //
+    // Useful info:
+    // - https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-display-names
+    testImplementation(platform("org.junit:junit-bom:latest.release"))
+    testImplementation("org.junit.jupiter", "junit-jupiter")
+
+    // Unit Test Assertion library
+    testImplementation("org.assertj", "assertj-core", "latest.release")
+    {#- https://github.com/lukas-krecan/JsonUnit #}
+
+    // Unit Test Mocking Framework
+    testImplementation(platform("org.mockito:mockito-bom:latest.release"))
+    testImplementation("org.mockito", "mockito-core")
+    testImplementation("org.mockito", "mockito-junit-jupiter")
+}
+
+tasks {
+    test {
+        // After running test, always generate report
+        finalizedBy(jacocoTestReport)
+
+        useJUnitPlatform()
+        testLogging { events(
+            TestLogEvent.PASSED,
+            TestLogEvent.SKIPPED,
+            TestLogEvent.FAILED
+        )}
+    }
+
+    jacocoTestReport {
+        // Before generating report, always run tests
+        dependsOn(test)
+
+        reports {
+            xml.required = false
+            csv.required = false
+            html.required = true
+        }
+
+        println("See jacoco report at: file://${this@jacocoTestReport.reports.html.entryPoint}")
+    }
+}
