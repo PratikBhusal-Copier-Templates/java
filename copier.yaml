@@ -68,3 +68,8 @@ java_app_or_library:
   choices:
     java application: "java"
     java library: "java-library"
+
+have_dependency_injection_framework:
+  type: bool
+  help: Include Dagger for dependency injection?
+  default: yes
