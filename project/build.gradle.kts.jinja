@@ -15,6 +15,9 @@ plugins {
 
     // Code Coverage
     id("jacoco")
+    //
+    // Code Formatter
+    id("com.diffplug.spotless") version "latest.release"
 }
 
 group = "{{project_group_id}}"
@@ -69,5 +72,94 @@ tasks {
         }
 
         println("See jacoco report at: file://${this@jacocoTestReport.reports.html.entryPoint}")
+    }
+}
+
+spotless {
+    // optional: limit format enforcement to just the files changed by this
+    // feature branch
+    ratchetFrom("origin/main")
+
+    format("misc") {
+        // define the files to apply `misc` to
+        target("*.gradle.kts", ".gitattributes", ".gitignore")
+
+        // define the steps to apply to those files
+        trimTrailingWhitespace()
+        indentWithSpaces(4)
+        endWithNewline()
+    }
+    java {
+        // don't need to set target, it is inferred from java
+
+        // Automatic code refactoring with Cleanthat. In the future, may replace or
+        // also include eclipse clean up refactoring tool. See:
+        //
+        // - https://github.com/solven-eu/cleanthat/blob/master/MUTATORS.generated.MD
+        // - https://github.com/solven-eu/cleanthat/blob/master/MUTATORS_BY_TAG.generated.MD
+        cleanthat()
+            // Java 17 is the latest defined version. See:
+            //
+            // Tracking:  https://github.com/solven-eu/cleanthat/blob/master/refactorer/src/main/java/eu/solven/cleanthat/engine/java/IJdkVersionConstants.java#L60
+            // Permalink: https://github.com/solven-eu/cleanthat/blob/c97ded164de19cc1c90bd3a9162ed794dae22ee9/refactorer/src/main/java/eu/solven/cleanthat/engine/java/IJdkVersionConstants.java#L60
+            {#
+            // TODO: Verify if we need to specify the sourceCompatibility field
+            // at all. If not, remove it.
+            -#}
+            .sourceCompatibility("17")
+            .includeDraft(true)
+            .addMutator("SafeAndConsensual")
+            .addMutator("SafeButControversial")
+            .addMutator("SafeButNotConsensual")
+            .addMutator("CheckStyleMutators")
+            .addMutator("ErrorProneMutators")
+            {#
+            // TODO: Verify if we want to add any of the below composite
+            // mutators.
+            -#}
+            .addMutator("Guava")
+            .addMutator("JSparrowMutators")
+            .addMutator("PMDMutators")
+            .addMutator("SonarMutators")
+            .addMutator("SpotBugsMutators")
+            .addMutator("Stream")
+            .excludeMutator("AvoidInlineConditionals")
+            .excludeMutator("CreateTempFilesUsingNio")
+            .excludeMutator("LiteralsFirstInComparisons")
+            .excludeMutator("RemoveExplicitCallToSuper")
+            .excludeMutator("SimplifyBooleanExpression")
+            .excludeMutator("SimplifyStartsWith")
+
+        {#
+        // TODO: Currently, we cannot run 2 eclipse steps within spotless
+        // gradle,but we can within spotless maven. Probably make a PR on the
+        // eclipse IDE formatter that enables adding a setting to force merge
+        // string concatenation lines and then attempt to wrap
+        //
+        // See: https://github.com/eclipse-jdt/eclipse.jdt.core/tree/master/org.eclipse.jdt.core/formatter/org/eclipse/jdt
+        //
+        // Run intermediately eclipse code formatter profile to address string
+        // concatenation inconsistencies. Based on our own preferred style
+        // configuration, but need to copy all configs as otherwise eclipse
+        // formatter will use its own defaults.
+        //
+        // See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=48433
+        eclipse("4.30")
+            .configFile(".config/no-string-concatenation-wrapping-formatter.xml")
+        -#}
+
+        // Run eclipse code formatter profile
+        eclipse("4.30")
+            .configFile(".config/eclipse-code-formatter-profile.xml")
+
+        removeUnusedImports()
+
+        // import order file as exported from eclipse. See:
+        //
+        // https://github.com/diffplug/spotless/blob/main/ECLIPSE_SCREENSHOTS.md#creating-spotlessimportorder
+        importOrderFile(".config/eclipse-import-order.importorder")
+
+        trimTrailingWhitespace()
+        endWithNewline()
     }
 }
