@@ -68,3 +68,12 @@ java_app_or_library:
   choices:
     java application: "java"
     java library: "java-library"
+
+repository_host:
+  type: str
+  help: Where will this repo be stored?
+  default: "github"
+  choices:
+    GitHub: "github"
+    # GitLab: "gitlab" # TODO: Support GitLab
+  when: false # TODO: Support GitLab. This makes sure it isn't asked nor stored.
