@@ -1,0 +1,57 @@
+name: Measure unit test diff coverage
+on:
+  push:
+    branches: [main]
+    paths:
+      # TODO: Update path
+      - "**/src/**/*.java"
+      - "gradle/libs.versions.toml"
+  pull_request:
+    paths:
+      # TODO: Update path
+      - "**/src/**/*.java"
+      - "gradle/libs.versions.toml"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_USERNAME: ${{ secrets.USERNAME }}
+      GITHUB_TOKEN: ${{ secrets.GH_PACKAGE_AUTH_TOKEN }}
+    steps:
+      - name: Checkout this branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Run Coverage
+        run: ./gradlew --console plain deltaCoverage
+      - name: Upload Report
+        uses: 'actions/upload-artifact@v4'
+        with:
+          name: report.xml
+          # TODO: Update path
+          path: ${{ github.workspace }}/library/build/reports/coverage-reports/delta-coverage/report.xml
+      - name: Jacoco Report to PR
+        id: jacoco-delta-coverage
+        uses: madrapps/jacoco-report@v1.6.1
+        with:
+          # TODO: Update path
+          paths: ${{ github.workspace }}/library/build/reports/coverage-reports/delta-coverage/**/report.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 90
+          min-coverage-changed-files: 90
+          update-comment: true
+          title: '# :robot: `Diff Coverage Report`'
+          debug-mode: false
+          pass-emoji: ':green_circle:'
+          fail-emoji: ':red_circle:'
+      - name: Get the Coverage info
+        run: |
+          echo "Total coverage ${{ steps.jacoco-delta-coverage.outputs.coverage-overall }}"
+          echo "Changed Files coverage ${{ steps.jacoco-delta-coverage.outputs.coverage-changed-files }}"
