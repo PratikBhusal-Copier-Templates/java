@@ -77,3 +77,14 @@ repository_host:
     GitHub: "github"
     # GitLab: "gitlab" # TODO: Support GitLab
   when: false # TODO: Support GitLab. This makes sure it isn't asked nor stored.
+
+update_bot:
+  type: str
+  help: Which bot do you want to use for updating dependencies?
+  default: "dependabot"
+  choices:
+    Dependabot:
+        value: "dependabot"
+        validator: "{% if repository_host != 'github' %}Dependabot only available on GitHub{% endif %}"
+    # Renovate: "renovate" # TODO: Support Renovate
+  when: false # TODO: Support Renovate. This makes sure it isn't asked nor stored.
