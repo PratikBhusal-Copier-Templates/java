@@ -1,3 +1,4 @@
+import io.github.surpsg.deltacoverage.gradle.DeltaCoverageConfiguration
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 // Tip: Use `apply false` in the top-level build.gradle file to add a Gradle
@@ -18,6 +19,8 @@ plugins {
 
     // Code Formatter
     alias(libs.plugins.spotless)
+
+    alias(libs.plugins.delta.coverage)
 
     {%- if use_lombok %}
 
@@ -63,14 +66,16 @@ dependencies {
 tasks {
     test {
         // After running test, always generate report
-        finalizedBy(jacocoTestReport)
+        finalizedBy(deltaCoverage)
 
         useJUnitPlatform()
-        testLogging { events(
-            TestLogEvent.PASSED,
-            TestLogEvent.SKIPPED,
-            TestLogEvent.FAILED
-        )}
+        testLogging {
+            events(
+                TestLogEvent.PASSED,
+                TestLogEvent.SKIPPED,
+                TestLogEvent.FAILED,
+            )
+        }
     }
 
     javadoc {
@@ -82,6 +87,13 @@ tasks {
         doLast {
             println("[Documentation]: file://${this@javadoc.destinationDir}/index.html")
         }
+    }
+
+    register("coverage") {
+        group = "Verification"
+        description = "Generate Code Coverage"
+
+        dependsOn(jacocoTestReport, deltaCoverage)
     }
 
     jacocoTestReport {
@@ -97,6 +109,10 @@ tasks {
         doLast {
             println("[Coverage]: file://${this@jacocoTestReport.reports.html.entryPoint}")
         }
+    }
+
+    deltaCoverage {
+        dependsOn(test)
     }
 }
 
@@ -188,4 +204,19 @@ spotless {
         endWithNewline()
     }
 }
+
+configure<DeltaCoverageConfiguration> {
+    diffSource.git.apply {
+        compareWith("origin/main")
+        // Temporarily don't use native git while there is no code to
+        // diff against
+        // useNativeGit = true
+    }
+
+    reports {
+        html = true
+        xml = true
+    }
+}
+
 {#- # vim: set filetype=kotlin : #}
