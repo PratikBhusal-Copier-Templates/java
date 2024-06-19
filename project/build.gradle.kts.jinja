@@ -61,6 +61,12 @@ tasks {
         )}
     }
 
+    javadoc {
+        doLast {
+            println("[Documentation]: file://${this@javadoc.destinationDir}/index.html")
+        }
+    }
+
     jacocoTestReport {
         // Before generating report, always run tests
         dependsOn(test)
@@ -71,7 +77,9 @@ tasks {
             html.required = true
         }
 
-        println("See jacoco report at: file://${this@jacocoTestReport.reports.html.entryPoint}")
+        doLast {
+            println("[Coverage]: file://${this@jacocoTestReport.reports.html.entryPoint}")
+        }
     }
 }
 
