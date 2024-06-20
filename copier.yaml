@@ -91,3 +91,8 @@ update_bot:
         validator: "{% if repository_host != 'github' %}Dependabot only available on GitHub{% endif %}"
     # Renovate: "renovate" # TODO: Support Renovate
   when: false # TODO: Support Renovate. This makes sure it isn't asked nor stored.
+
+use_lombok:
+  type: bool
+  help: Use lombok?
+  default: no

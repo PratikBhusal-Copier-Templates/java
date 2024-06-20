@@ -18,6 +18,11 @@ plugins {
 
     // Code Formatter
     alias(libs.plugins.spotless)
+
+    {%- if use_lombok %}
+
+    alias(libs.plugins.lombok.gradle.plugin)
+    {%- endif %}
 }
 
 group = "{{project_group_id}}"
@@ -69,6 +74,11 @@ tasks {
     }
 
     javadoc {
+        {% if use_lombok -%}
+        exclude("**/lombok.config")
+
+        {% endif -%}
+
         doLast {
             println("[Documentation]: file://${this@javadoc.destinationDir}/index.html")
         }
