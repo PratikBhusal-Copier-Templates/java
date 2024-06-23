@@ -9,6 +9,3 @@ updates:
     directory: "dependency-tracking/java/" # Location of package manifests
     schedule:
       interval: "daily"
-    # TODO: Remove target branch so that it updates dependencies for the `main`
-    # branch
-    target-branch: "feature/gradle-version-catalog/-"
