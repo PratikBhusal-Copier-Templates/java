@@ -8,6 +8,7 @@ time_now := $(shell date -u +%Y-%m-%dT%H_%M_%SZ)
 
 generate:
 	@copier copy \
+		--trust \
 		-r HEAD \
 		${PWD} \
 		tmp-test-generations/current
@@ -15,6 +16,7 @@ generate:
 
 generate-timestamped:
 	@copier copy \
+		--trust \
 		-r HEAD \
 		${PWD} \
 		tmp-test-generations/${time_now}

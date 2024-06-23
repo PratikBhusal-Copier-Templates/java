@@ -6,6 +6,9 @@ _envops:
 _subdirectory: project
 _skip_if_exists:
 - CHANGELOG.md
+_jinja_extensions:
+- copier_templates_extensions.TemplateExtensionLoader
+- extensions/dependency_context.py:ContextUpdater
 
 # PROMPT
 # ------------------------------------------------------------------------------
