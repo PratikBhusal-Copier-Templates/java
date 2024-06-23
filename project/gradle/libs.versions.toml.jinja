@@ -4,27 +4,27 @@
 # - https://github.com/lukas-krecan/JsonUnit
 
 [versions]
-arrow-core = "1.2.4"
-checker-framework-qualifier = "3.44.0"
-jakarta-annotation-api = "3.0.0"
-lombok-gradle-plugin = "8.6"
-task-tree = "3.0.0"
+arrow-core = "{{_arrow_core_version}}"
+checker-framework-qualifier = "{{_checker_framework_qualifier_version}}"
+jakarta-annotation-api = "{{_jakarta_annotation_api_version}}"
+lombok-gradle-plugin = "{{_lombok_gradle_plugin_version}}"
+task-tree = "{{_task_tree_version}}"
 
 # Logging
-log4j = "2.23.1" # BOM-like
-slf4j-api = "2.0.13"
+log4j = "{{_log4j_version}}" # BOM-like
+slf4j-api = "{{_slf4j_api_version}}"
 
 # Testing
-assertJ = "3.25.3"
-delta-coverage = "2.3.0"
-junit = "5.10.2" # BOM-like
-mockito = "5.12.0" # BOM-like
+assertJ = "{{_assertJ_version}}"
+delta-coverage = "{{_delta_coverage_version}}"
+junit = "{{_unit_version}}" # BOM-like
+mockito = "{{_mockito_version}}" # BOM-like
 
 # Formatting
-spotless = "6.25.0"
+spotless = "{{_spotless_version}}"
 
 # Misc
-checker-framework = "0.6.40"
+checker-framework = "{{_checker_framework_version}}"
 
 [libraries]
 arrow-core = { module = "io.arrow-kt:arrow-core-jvm", version.ref = "arrow-core" }
@@ -60,7 +60,7 @@ delta-coverage = { id = "io.github.surpsg.delta-coverage", version.ref = "delta-
 jvm-shared-logging-implementation = [
     "log4j-api",
     "log4j-slf4j2-impl",
-    "slf4j",
+    "slf4j-api",
 ]
 jvm-shared-testing = [
     "assertJ",
@@ -68,3 +68,5 @@ jvm-shared-testing = [
     "mockito-core",
     "mockito-junit",
 ]
+
+{#- # vim: set filetype=toml : -#}
