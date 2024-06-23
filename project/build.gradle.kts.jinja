@@ -15,9 +15,9 @@ plugins {
 
     // Code Coverage
     id("jacoco")
-    //
+
     // Code Formatter
-    id("com.diffplug.spotless") version "latest.release"
+    alias(libs.plugins.spotless)
 }
 
 group = "{{project_group_id}}"
@@ -27,25 +27,32 @@ repositories {
     mavenCentral()
 }
 
+// Maven Scope -> Gradle Configuration Translation/Overview
+// =============================================================================
+// `compile` -> `implementation` or `api`. Prefer `implementation` unless you
+//              have good reason to expose the dependency to consumers.
+//
+// `test`    -> `testImplementation`
+//
+// `runtime` -> `runtimeOnly`
+//
+// See:
+// - https://docs.gradle.org/current/userguide/java_library_plugin.html#sec:java_library_configurations_graph
+// - https://reflectoring.io/maven-scopes-gradle-configurations
+// - https://kotlinlang.org/docs/gradle-configure-project.html#dependency-types
 dependencies {
-    ////////////////////////////////////////////////////////////////////////////
-    //                              Unit Testing                              //
-    ////////////////////////////////////////////////////////////////////////////
-    // Unit Test Framework
+    compileOnly(libs.jakarta.annotation.api)
+    compileOnly(libs.checker.framework.qualifier)
+
+    runtimeOnly(libs.log4j.core)
+
+    implementation(libs.bundles.jvm.shared.logging.implementation)
+    implementation(libs.arrow.core)
+
+    // See:
     //
-    // Useful info:
     // - https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-display-names
-    testImplementation(platform("org.junit:junit-bom:latest.release"))
-    testImplementation("org.junit.jupiter", "junit-jupiter")
-
-    // Unit Test Assertion library
-    testImplementation("org.assertj", "assertj-core", "latest.release")
-    {#- https://github.com/lukas-krecan/JsonUnit #}
-
-    // Unit Test Mocking Framework
-    testImplementation(platform("org.mockito:mockito-bom:latest.release"))
-    testImplementation("org.mockito", "mockito-core")
-    testImplementation("org.mockito", "mockito-junit-jupiter")
+    testImplementation(libs.bundles.jvm.shared.testing)
 }
 
 tasks {

@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "copier-java-template"
+version = "0.1.0"
+description = ""
+authors = ["PratikBhusal <PratikBhusal@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.10.0"
+copier = "^9.2.0"
+copier-templates-extensions = "^0.3.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
