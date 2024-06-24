@@ -1,3 +1,4 @@
+.DEFAULT_GOAL := generate-timestamped
 .PHONY: generate generate-timestamped
 
 # Use simple assignment to avoid having different time values whenever this is
