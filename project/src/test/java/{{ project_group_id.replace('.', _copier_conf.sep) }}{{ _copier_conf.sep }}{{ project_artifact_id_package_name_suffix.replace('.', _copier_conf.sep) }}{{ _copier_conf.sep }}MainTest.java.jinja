@@ -8,8 +8,9 @@ class MainTest {
 
     @Test
     void testMain() {
-        assertThatNoException().isThrownBy(() ->
-            Main.main(new String[]{"200"})
+        assertThatNoException().isThrownBy(() -> Main.main(new String[]{
+            "200"
+        })
         );
     }
 
