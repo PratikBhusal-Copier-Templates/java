@@ -5,7 +5,7 @@
 
 [versions]
 arrow-core = "1.2.4"
-checker-framework-qualifier = "3.44.0"
+checker-framework-qualifier = "3.45.0"
 jakarta-annotation-api = "3.0.0"
 lombok-gradle-plugin = "8.6"
 task-tree = "4.0.0"
@@ -17,7 +17,7 @@ slf4j-api = "2.0.13"
 # Testing
 assertJ = "3.26.0"
 delta-coverage = "2.3.0"
-junit = "5.10.2" # BOM-like
+junit = "5.10.3" # BOM-like
 mockito = "5.12.0" # BOM-like
 
 # Formatting
