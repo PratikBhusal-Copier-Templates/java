@@ -1,4 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import kotlin.io.path.Path
 
 // Tip: Use `apply false` in the top-level build.gradle file to add a Gradle
 // plugin as a build dependency but not apply it to the current (root) project.
@@ -15,6 +16,9 @@ plugins {
 
     // Code Coverage
     id("jacoco")
+
+    // Enforce style guide
+    id("checkstyle")
 
     // Code Formatter
     alias(libs.plugins.spotless)
@@ -98,6 +102,10 @@ tasks {
             println("[Coverage]: file://${this@jacocoTestReport.reports.html.entryPoint}")
         }
     }
+}
+
+checkstyle {
+    configDirectory.set(Path(rootDir.canonicalPath, ".config", "checkstyle").toFile())
 }
 
 spotless {

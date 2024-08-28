@@ -299,3 +299,7 @@ ij_java_subclass_name_suffix = Impl
 ij_java_test_name_suffix = Test
 ij_java_use_external_annotations = false
 ij_java_visibility = private
+
+
+[.config/checkstyle/checkstyle.xml]
+indent_size = 2
