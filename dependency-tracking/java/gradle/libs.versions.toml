@@ -21,7 +21,7 @@ junit = "5.11.4" # BOM-like
 mockito = "5.14.2" # BOM-like
 
 # Formatting
-spotless = "6.25.0"
+spotless = "7.0.1"
 
 # Misc
 checker-framework = "0.6.48"
