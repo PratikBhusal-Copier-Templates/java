@@ -15,7 +15,7 @@ log4j = "2.24.3" # BOM-like
 slf4j-api = "2.0.16"
 
 # Testing
-assertJ = "3.27.2"
+assertJ = "3.27.3"
 delta-coverage = "2.5.0"
 junit = "5.11.4" # BOM-like
 mockito = "5.15.2" # BOM-like
