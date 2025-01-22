@@ -7,7 +7,7 @@
 arrow-core = "2.0.0"
 checker-framework-qualifier = "3.48.4"
 jakarta-annotation-api = "3.0.0"
-lombok-gradle-plugin = "8.11"
+lombok-gradle-plugin = "8.12"
 task-tree = "4.0.0"
 
 # Logging
