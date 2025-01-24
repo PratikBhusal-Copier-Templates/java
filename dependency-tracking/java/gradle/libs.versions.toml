@@ -4,7 +4,7 @@
 # - https://github.com/lukas-krecan/JsonUnit
 
 [versions]
-arrow-core = "2.0.0"
+arrow-core = "2.0.1"
 checker-framework-qualifier = "3.48.4"
 jakarta-annotation-api = "3.0.0"
 lombok-gradle-plugin = "8.12"
