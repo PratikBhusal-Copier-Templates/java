@@ -11,6 +11,21 @@ lombok-gradle-plugin = "{{_lombok_gradle_plugin_version}}"
 task-tree = "{{_task_tree_version}}"
 
 # Logging
+{#
+┌─────────────────────────────────┬───────────────────┬───────────────────┐
+│ Logging Dependency Requirements │ log4j─api         │ slf4j─api         │
+├─────────────────────────────────┼───────────────────┼───────────────────┤
+│ log4j─core                      │ log4j─core,       │ log4j─core,       │
+│                                 │ log4j─api,        │ log4j─api,        │
+│                                 │                   │ slf4j─api,        │
+│                                 │                   │ log4j-slf4j2-impl │
+├─────────────────────────────────┼───────────────────┼───────────────────┤
+│ logback─core                    │ logback─core,     │ logback─classic   │
+│                                 │ log4j─api,        │                   │
+│                                 │ slf4j─api,        │                   │
+│                                 │ log4j-slf4j2-impl │                   │
+└─────────────────────────────────┴───────────────────┴───────────────────┘
+-#}
 log4j = "{{_log4j_version}}" # BOM-like
 slf4j-api = "{{_slf4j_api_version}}"
 
