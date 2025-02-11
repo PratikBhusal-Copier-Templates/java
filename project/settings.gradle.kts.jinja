@@ -10,5 +10,7 @@ rootProject.name = "{{project_artifact_id}}"
 
 plugins {
     // Apply the foojay-resolver plugin to allow automatic download of JDKs
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+    // Note: there is no easy way to use version catalogs in
+    // `settings.gradle.kts`
+    id("org.gradle.toolchains.foojay-resolver-convention") version "{{_foojay_resolver_convention_version}}"
 }
