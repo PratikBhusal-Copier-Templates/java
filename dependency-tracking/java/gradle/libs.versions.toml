@@ -21,7 +21,7 @@ slf4j-api = "2.0.17"
 assertJ = "3.27.4"
 delta-coverage = "2.5.0"
 junit = "5.13.4" # BOM-like
-mockito = "5.18.0" # BOM-like
+mockito = "5.19.0" # BOM-like
 
 # Formatting
 spotless = "7.2.1"
