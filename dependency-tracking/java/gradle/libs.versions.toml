@@ -27,7 +27,7 @@ mockito = "5.20.0" # BOM-like
 spotless = "8.0.0"
 
 # Misc
-checker-framework = "0.6.59"
+checker-framework = "0.6.60"
 
 [libraries]
 vavr = { module = "io.vavr:vavr", version.ref = "vavr" }
