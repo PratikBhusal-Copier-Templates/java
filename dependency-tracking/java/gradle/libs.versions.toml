@@ -6,7 +6,7 @@
 [versions]
 # Plugins
 foojay-resolver-convention = "1.0.0"
-lombok-gradle-plugin = "9.0.0"
+lombok-gradle-plugin = "9.1.0"
 task-tree = "4.0.1"
 
 vavr = "0.10.7"
