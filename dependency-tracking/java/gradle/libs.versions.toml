@@ -9,7 +9,7 @@ foojay-resolver-convention = "1.0.0"
 lombok-gradle-plugin = "9.2.0"
 task-tree = "4.0.1"
 
-vavr = "0.11.0"
+vavr = "1.0.0"
 checker-framework-qualifier = "3.53.1"
 jakarta-annotation-api = "3.0.0"
 
