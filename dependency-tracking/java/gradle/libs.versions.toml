@@ -10,7 +10,7 @@ lombok-gradle-plugin = "9.2.0"
 task-tree = "4.0.1"
 
 vavr = "1.0.1"
-checker-framework-qualifier = "3.54.0"
+checker-framework-qualifier = "3.54.1"
 jakarta-annotation-api = "3.0.0"
 
 # Logging
