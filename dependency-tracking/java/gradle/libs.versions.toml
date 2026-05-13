@@ -15,7 +15,7 @@ jakarta-annotation-api = "3.0.0"
 
 # Logging
 log4j = "2.26.0" # BOM-like
-slf4j-api = "2.0.17"
+slf4j-api = "2.0.18"
 
 # Testing
 assertJ = "3.27.7"
