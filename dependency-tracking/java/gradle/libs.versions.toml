@@ -20,7 +20,7 @@ slf4j-api = "2.0.18"
 # Testing
 assertJ = "3.27.7"
 delta-coverage = "2.5.0"
-junit = "6.0.3" # BOM-like
+junit = "6.1.0" # BOM-like
 mockito = "5.23.0" # BOM-like
 
 # Formatting
