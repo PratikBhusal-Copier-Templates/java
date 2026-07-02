@@ -14,7 +14,7 @@ checker-framework-qualifier = "4.2.1"
 jakarta-annotation-api = "3.0.0"
 
 # Logging
-log4j = "2.26.0" # BOM-like
+log4j = "2.26.1" # BOM-like
 slf4j-api = "2.0.18"
 
 # Testing
