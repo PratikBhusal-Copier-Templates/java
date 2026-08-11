@@ -7,7 +7,7 @@
 # Plugins
 foojay-resolver-convention = "1.0.0"
 lombok-gradle-plugin = "9.5.0"
-task-tree = "4.0.1"
+task-tree = "4.0.2"
 
 vavr = "1.0.1"
 checker-framework-qualifier = "4.2.2"
